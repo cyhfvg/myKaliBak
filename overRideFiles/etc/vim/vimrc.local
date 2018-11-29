@@ -1,0 +1,106 @@
+"样式
+set encoding=utf-8	"设定字符集
+scriptencoding utf-8
+set helplang=cn		"设定中文帮助
+set shortmess=atI	"设定启动不显示提示
+set number			"设定显示行号
+set relativenumber	"设定相对行号
+set ruler		"设定标尺
+set showcmd		"设定输入的命令显示
+set scrolloff=5		"设置垂直滚动时据顶部/底部行距
+set nocompatible	"设定取消vi一致性
+set t_Co=256		"启用256色
+set whichwrap+=<,>,h,l	"设定光标移动可跨越行边界
+set belloff=all		"设定无提示音
+set showmatch		"设定高亮显示匹配的括号
+set matchtime=2		"设定括号匹配高亮时间 单位为1/10秒
+colorscheme default
+
+"语法/缩进
+syntax on		"设定语法高亮
+set completeopt=preview,menu	"代码补全
+set autoindent		"设定自动缩进
+set tabstop=4		"设定tab宽度4
+set expandtab		"设置空格替换tab
+set shiftwidth=4	"设定代码自动缩进宽度4
+set smartindent		"设定自动缩进
+set wildmenu		"命令模式中的命令行自动完成
+
+"搜索
+set ignorecase		"设定搜索忽略大小写
+set hlsearch		"设定逐字符高亮
+"set incsearch		"设定自动跳转到第一个匹配项
+
+"文件/file
+filetype on		"设定侦测文件类型
+filetype plugin indent on	"设定为特定文件类型载入缩进文件
+set noswapfile		"设定不生成临时文件
+set nobackup		"设定不创建备份文件
+set autochdir		"设定自动更改当前目录的值
+set clipboard+=unnamed	"设定共享剪贴板
+
+"设置文件头
+map <F1> :call SetFileTitle()<CR>
+func SetFileTitle()
+    if &filetype ==? 'sh'
+        call setline(1,'#!/bin/bash')
+        call setline(2,'')
+    endif
+    if &filetype ==? 'ruby' 
+        call setline(1,'#!/usr/bin/ruby')
+        call setline(2,'')
+    endif
+    if &filetype ==? 'java'
+        call setline(1,'public class %{')
+        call setline(2,'\tpublic static void main(String[] args){')
+        call setline(3,'\t\t')
+        call setline(4,'\t}')
+        call setline(5,'}')
+    endif
+    if &filetype ==? 'c' || &filetype ==? 'h'
+        call setline(1,'#include <stdio.h>')
+        call setline(2,'#include <stdlib.h>')
+        call setline(2,'')
+    endif
+    if &filetype ==? 'python'
+        call setline(1,'#!/usr/bin/python')
+        call setline(2,'')
+    endif
+endfunc
+
+
+"vim-plug插件启用处
+call plug#begin('~/.vim/plugged')
+"文件搜索
+Plug 'junegunn/fzf'
+"语法检查
+Plug 'w0rp/ale'
+"语法检查
+"Plug 'vim-syntastic/syntastic'
+"中文文档
+Plug 'yianwillis/vimcdoc'
+"状态栏美化
+Plug 'vim-airline/vim-airline'
+"状态栏
+Plug 'edkolev/tmuxline.vim'
+"状态栏主题
+Plug 'vim-airline/vim-airline-themes'
+"文件管理器
+Plug 'scrooloose/nerdtree'
+"if-end补全
+Plug 'tpope/vim-endwise'
+call plug#end()
+
+
+"插件配置
+if filereadable('/etc/vim/aleplug.local')
+  source /etc/vim/aleplug.local
+endif
+
+if filereadable('/etc/vim/airline_theme.local')
+  source /etc/vim/airline_theme.local
+endif
+
+if filereadable('/etc/vim/nerdtree.local')
+    source /etc/vim/nerdtree.local
+endif

@@ -1,0 +1,12 @@
+scriptencoding utf-8
+
+map <Leader>f :NERDTreeToggle<CR>
+
+"窗口位置
+let g:NERDTreeWinPos='left'
+"窗口尺寸
+let g:NERDTreeSize=30
+"显示行号
+let g:NERDTreeShowLineNumbers=1
+"显示隐藏文件
+let g:NERDTreeHidden=1
