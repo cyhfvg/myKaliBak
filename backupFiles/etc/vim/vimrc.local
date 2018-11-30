@@ -1,54 +1,95 @@
-"样式
+"=======================================================
 set encoding=utf-8	"设定字符集
 scriptencoding utf-8
+filetype on		"设定侦测文件类型
 set helplang=cn		"设定中文帮助
 set shortmess=atI	"设定启动不显示提示
 set number			"设定显示行号
 set relativenumber	"设定相对行号
-set ruler		"设定标尺
-set showcmd		"设定输入的命令显示
-set scrolloff=5		"设置垂直滚动时据顶部/底部行距
-set nocompatible	"设定取消vi一致性
+set scrolloff=10	"设置垂直滚动时据顶部/底部行距
 set t_Co=256		"启用256色
 set whichwrap+=<,>,h,l	"设定光标移动可跨越行边界
 set belloff=all		"设定无提示音
-set showmatch		"设定高亮显示匹配的括号
-set matchtime=2		"设定括号匹配高亮时间 单位为1/10秒
-colorscheme default
+""set showmatch		"设定高亮显示匹配的括号
+""set matchtime=2		"设定括号匹配高亮时间 单位为1/10秒
+"配色方案()
+colorscheme default 
+"折叠
+set foldenable
+set foldmethod=syntax
+set foldcolumn=0
+setlocal foldlevel=2
+"折叠 空格
+nnoremap <space> za
+
+"========================================================
 
 "语法/缩进
-syntax on		"设定语法高亮
-set completeopt=preview,menu	"代码补全
-set autoindent		"设定自动缩进
-set tabstop=4		"设定tab宽度4
-set expandtab		"设置空格替换tab
-set shiftwidth=4	"设定代码自动缩进宽度4
-set smartindent		"设定自动缩进
-set wildmenu		"命令模式中的命令行自动完成
 
 "搜索
 set ignorecase		"设定搜索忽略大小写
 set hlsearch		"设定逐字符高亮
 "set incsearch		"设定自动跳转到第一个匹配项
 
+"=======================================================
 "文件/file
-filetype on		"设定侦测文件类型
-filetype plugin indent on	"设定为特定文件类型载入缩进文件
 set noswapfile		"设定不生成临时文件
 set nobackup		"设定不创建备份文件
 set autochdir		"设定自动更改当前目录的值
 set clipboard+=unnamed	"设定共享剪贴板
+set autowrite
+set hidden
+"=======================================================
 
-"设置文件头
+"======================================================
+"一般文件补全==
+"==============
+set tabstop=4
+set shiftwidth=4
+set expandtab		"设置空格替换tab
+set completeopt=menu,preview	"代码补全
+set wildmenu		"命令模式中的命令行自动完成
+set autoindent		"设定自动缩进
+set smartindent		"设定自动缩进
+
+inoremap ' ''<ESC>i
+inoremap " ""<ESC>i
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap { {}<ESC>i
+"=======================================================
+
+"======================================================
+"F1设置文件头==
+"==============
 map <F1> :call SetFileTitle()<CR>
+
 func SetFileTitle()
     if &filetype ==? 'sh'
         call setline(1,'#!/bin/bash')
         call setline(2,'')
+        "缩进
+         set tabstop=2
+         set shiftwidth=2
+         "括号自动补全
+         inoremap ' ''<ESC>i
+         inoremap " "$"<ESC>i
+         inoremap ( ()<ESC>i
+         inoremap [ [<Space><Space>]<ESC>hi
+         inoremap { {}<ESC>i
     endif
     if &filetype ==? 'ruby' 
         call setline(1,'#!/usr/bin/ruby')
         call setline(2,'')
+        "缩进
+        set tabstop=2
+        set shiftwidth=2
+        "括号自动补全
+        inoremap ' ''<ESC>i
+        inoremap " ""<ESC>i
+        inoremap ( ()<ESC>i
+        inoremap [ []<ESC>i
+        inoremap { {}<ESC>i
     endif
     if &filetype ==? 'java'
         call setline(1,'public class %{')
@@ -56,6 +97,15 @@ func SetFileTitle()
         call setline(3,'\t\t')
         call setline(4,'\t}')
         call setline(5,'}')
+        "缩进
+        set tabstop=4
+        set shiftwidth=4
+        "括号自动补全
+        inoremap ' ''<ESC>i
+        inoremap " ""<ESC>i
+        inoremap ( ()<ESC>i
+        inoremap [ []<ESC>i
+        inoremap { {<CR>}<ESC>O
     endif
     if &filetype ==? 'c' || &filetype ==? 'h'
         call setline(1,'#include <stdio.h>')
@@ -65,18 +115,52 @@ func SetFileTitle()
     if &filetype ==? 'python'
         call setline(1,'#!/usr/bin/python')
         call setline(2,'')
+        "缩进
+        set tabstop=2
+        set shiftwidth=2
+        "括号自动补全
+        inoremap ' ''<ESC>i
+        inoremap " ""<ESC>i
+        inoremap ( ()<ESC>i
+        inoremap [ []<ESC>i
+        inoremap { {}<ESC>i
     endif
 endfunc
+"===============================================
 
+"================================================
+"F5启动  ==
+"==========
+map <F5> :call F5exec()<CR>
 
-"vim-plug插件启用处
-call plug#begin('~/.vim/plugged')
+func! F5exec()
+    if &filetype ==? 'ruby'
+        exec 'w'
+        exec '!ruby ./%'
+    endif
+    if &filetype ==? 'sh'
+        exec 'w'
+        exec '!/bin/bash ./%'
+    endif
+    if &filetype ==? 'java'
+        exec 'w'
+        exec '!javac % && java %<'
+    endif
+    if &filetype ==? 'python'
+        exec 'w'
+        exec '!python ./%'
+    endif
+endfunc
+"=================================================
+
+"==================================================
+"vim-plug插件启用处==
+"====================
+call plug#begin('/usr/share/vim/vim81/plugged')
 "文件搜索
 Plug 'junegunn/fzf'
 "语法检查
 Plug 'w0rp/ale'
-"语法检查
-"Plug 'vim-syntastic/syntastic'
 "中文文档
 Plug 'yianwillis/vimcdoc'
 "状态栏美化
@@ -89,18 +173,50 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 "if-end补全
 Plug 'tpope/vim-endwise'
+"sniper
+Plug 'SirVer/ultisnips' 
 call plug#end()
+"===================================================
 
+"====================================================
+"ale  ==
+"=======
+nmap <Leader>d :ALEDetail<CR>
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+"设置始终开启标志列
+let g:ale_sign_column_always = 1
+let g:ale_set_highlights = 0
+"文件内容发生变化时不进行检查
+"let g:ale_lint_on_text_changed = 'never'
+"打开文件时不进行检查
+let g:ale_lint_on_enter = 0
+"解决javac错误信息乱码
+let g:ale_java_javac_options = '-encoding UTF-8 -J-Duser.language=en'
 
-"插件配置
-if filereadable('/etc/vim/aleplug.local')
-  source /etc/vim/aleplug.local
-endif
+let g:ale_sign_column_always = 0
+let g:ale_sign_error = 'xx'
+let g:ale_sign_warning = '--'
+let g:ale_set_highlights = 0
+"====================================================
 
-if filereadable('/etc/vim/airline_theme.local')
-  source /etc/vim/airline_theme.local
-endif
+"====================================================
+"airline_theme==
+"===============
+let g:airline_theme='raven'
+"====================================================
 
-if filereadable('/etc/vim/nerdtree.local')
-    source /etc/vim/nerdtree.local
-endif
+"====================================================
+"nerdtree   ==
+"=============
+map <Leader>f :NERDTreeToggle<CR>
+
+"窗口位置
+let g:NERDTreeWinPos='left'
+"窗口尺寸
+let g:NERDTreeSize=30
+"显示行号
+let g:NERDTreeShowLineNumbers=1
+"显示隐藏文件
+let g:NERDTreeHidden=1
+"====================================================
